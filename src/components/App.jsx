@@ -16,13 +16,13 @@ export const App = () => {
     const name = event.target.name;
     switch (name) {
       case 'good':
-        setGood(prevState => prevState + 1);
+        setGood(good + 1);
         break;
       case 'neutral':
-        setNeutral(prevState => prevState + 1);
+        setNeutral(neutral + 1);
         break;
       case 'bad':
-        setBad(prevState => prevState + 1);
+        setBad(bad + 1);
         break;
       default:
         return;
@@ -30,6 +30,7 @@ export const App = () => {
   };
   const countTotalFeedback = () => {
     const result = good + neutral + bad;
+    console.log(result);
     return result;
   };
   const countPositiveFeedbackPercentage = () => {
