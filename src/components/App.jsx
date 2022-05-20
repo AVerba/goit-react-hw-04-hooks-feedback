@@ -8,40 +8,25 @@ import { Title } from './ui/Title';
 import styles from './App.module.css';
 
 export const App = () => {
-  const [good, setGood] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [bad, setBad] = useState(0);
+  const [stats, setStats] = useState({ good: 0, neutral: 0, bad: 0 });
+  const [totalStats, setTotalStats] = useState(0);
+  const [positiveStats, setPositiveStats] = useState(0);
+
+  useEffect(() => {
+    const { good, neutral, bad } = stats;
+    setTotalStats(good + neutral + bad);
+  }, [stats]);
+
+  useEffect(() => {
+    if (totalStats)
+      setPositiveStats(Math.floor((stats.good * 100) / totalStats));
+  }, [totalStats, stats.good]);
 
   const feedbackHandler = event => {
     const name = event.target.name;
-    switch (name) {
-      case 'good':
-        setGood(good + 1);
-        break;
-      case 'neutral':
-        setNeutral(neutral + 1);
-        break;
-      case 'bad':
-        setBad(bad + 1);
-        break;
-      default:
-        return;
-    }
+    setStats(stats => ({ ...stats, [name]: stats[name] + 1 }));
   };
-  const countTotalFeedback = () => {
-    const result = good + neutral + bad;
-    console.log(result);
-    return result;
-  };
-  const countPositiveFeedbackPercentage = () => {
-    const allGoals = countTotalFeedback();
-    const positiveFeedback = Math.round((good * 100) / allGoals);
-    return positiveFeedback;
-  };
-
-  const PositiveFeedbackPercent = countPositiveFeedbackPercentage();
-  const options = ['good', 'neutral', 'bad'];
-  const allGoal = countTotalFeedback();
+  const options = Object.keys(stats);
   return (
     <Container className={styles.feedBack}>
       <Section className="options">
@@ -52,15 +37,15 @@ export const App = () => {
         ></FeedbackOptions>
       </Section>
       <Section className="statistic">
-        {allGoal ? (
+        {totalStats ? (
           <>
             <Title className="statisticBody" title="Statistics" />
             <Statistic
-              good={good}
-              bad={bad}
-              neutral={neutral}
-              total={allGoal}
-              positivePercentage={PositiveFeedbackPercent}
+              good={stats.good}
+              bad={stats.bad}
+              neutral={stats.neutral}
+              total={totalStats}
+              positivePercentage={positiveStats}
             ></Statistic>
           </>
         ) : (
